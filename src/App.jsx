@@ -8,7 +8,8 @@ class App extends Component {
     super(props);
 
     this.state = {
-      currentUser: {name: 'Bob'}, // optional. if currentUser is not defined, it means the user is Anonymous
+      id: '',
+      currentUser: { name: 'Bob' }, // optional. if currentUser is not defined, it means the user is Anonymous
       messages: [],
       value: ''
     };
@@ -17,20 +18,19 @@ class App extends Component {
   }
 
 
-  addNewMessage(event) {
+  addNewMessage(data) {
     console.log('Adding new messge ...');
 
     const newMessage = {
-      username: event.username,
-      content: event.content
+      username: data.username,
+      content: data.content
     }
 
-    console.log('newMessage = ', newMessage);
+    console.log('newMessage from "addNewMessage" function in App = ', newMessage);
 
-    const message = this.state.messages.concat(newMessage);
+    this.setState({messages: this.state.messages.concat(newMessage)});
 
     this.socket.send(JSON.stringify(newMessage));
-
   }
 
 
@@ -44,10 +44,14 @@ class App extends Component {
     }.bind(this);
 
      this.socket.onmessage = function(event) {
+        console.log('this.socket.onmessage "event" =\n', event);
+
         const messageFromServer = JSON.parse(event.data);
         const newMessages = this.state.messages.concat(messageFromServer);
+
         console.log('messageFromServer = ', messageFromServer);
-        console.log('messages = ', messages);
+        console.log('messages = ', newMessages);
+
         this.setState({ messages: newMessages })
       }
   }
@@ -57,7 +61,10 @@ class App extends Component {
     return (
       <div>
         <MessageList messages={ this.state.messages } />
-        <ChatBar addNewMessage={ this.addNewMessage } defaultValue={ this.state.currentUser } />
+        <ChatBar
+          username={ this.state.currentUser.name }
+          addNewMessage={ this.addNewMessage }
+          defaultValue={ this.state.currentUser } />
       </div>
     );
   }
