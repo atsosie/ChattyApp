@@ -22,13 +22,13 @@ class App extends Component {
     console.log('Adding new messge ...');
 
     const newMessage = {
-      username: data.username,
-      content: data.content
+      content: data.content,
+      type: data.type,
+      username: data.username
     }
 
     console.log('newMessage from "addNewMessage" function in App = ', newMessage);
 
-    this.setState({messages: this.state.messages.concat(newMessage)});
 
     this.socket.send(JSON.stringify(newMessage));
   }
@@ -43,17 +43,31 @@ class App extends Component {
       console.log('Connected to server', event);
     }.bind(this);
 
-     this.socket.onmessage = function(event) {
-        console.log('this.socket.onmessage "event" =\n', event);
+    this.socket.onmessage = function(event) {
+      console.log('this.socket.onmessage "event" =\n', event);
 
-        const messageFromServer = JSON.parse(event.data);
-        const newMessages = this.state.messages.concat(messageFromServer);
+      const data = JSON.parse(event.data);
+      console.log('JSON parsed data = ', data);
 
-        console.log('messageFromServer = ', messageFromServer);
-        console.log('messages = ', newMessages);
-
-        this.setState({ messages: newMessages })
+      switch(data.type) {
+        case 'incomingMessage':
+          this.setState({
+            messages: this.state.messages.concat(data.content)
+          });
+          break;
+        case 'incomingNotification':
+          this.setState({
+            messages: this.state.messages.concat(data.content)
+          });
+          break;
+        case 'initialState':
+          console.log('no messages yet');
+          break;
+        default:
+          // throw new Error('Unknown event type ' + data.type);
+          console.log('Unknown event type ' + data.type); //***Fix this
       }
+    }
   }
 
 

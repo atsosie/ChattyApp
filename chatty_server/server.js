@@ -1,5 +1,6 @@
 const express = require('express');
-const SocketServer = require('ws').Server;
+const SocketServer = require('ws');
+const uuid = require('node-uuid');
 
 // Set the port to 3001
 const PORT = 3001;
@@ -11,15 +12,19 @@ const server = express()
   .listen(PORT, '0.0.0.0', 'localhost', () => console.log(`Listening on ${ PORT }`));
 
 // Create the WebSockets server
-const wss = new SocketServer({ server });
+const wss = new SocketServer.Server({ server });
 
 // Set up a callback that will run when a client connects to the server
 // When a client connects they are assigned a socket, represented by
 // the ws parameter in the callback.
 
 function broadcast(data) {
+
   wss.clients.forEach((ws) => {
+    // console.log('These should be equal: ', ws.readyState, SocketServer.OPEN);
+
     if (ws.readyState === SocketServer.OPEN) {
+
       let stringifiedData = JSON.stringify(data);
       ws.send(stringifiedData);
     }
@@ -30,7 +35,7 @@ wss.on('connection', (ws) => {
   console.log('Client connected');
 
   let message = {
-    id: '',
+    type: 'initialState',
     content: '',
     username: ''
   }
@@ -39,6 +44,23 @@ wss.on('connection', (ws) => {
   ws.on('message', (message) => {
     let parsedMessage = JSON.parse(message);
     console.log(`User ${parsedMessage.username} said ${parsedMessage.content}`);
+
+    switch(parsedMessage.type) {
+      case 'postNotification':
+        parsedMessage.type = 'incomingNotification';
+        break;
+      case 'postMessage':
+        parsedMessage.type = 'incomingMessage';
+        parsedMessage.id = uuid.v1();
+        break;
+      case 'initialState':
+        parsedMessage.type = 'initialState';
+        break;
+      default:
+        //throw new Error('Unknown event type ' + message.type)
+        console.log('Unknown event type ' + message.type); //***Fix this
+    }
+
     broadcast(parsedMessage);
   });
 

@@ -5,14 +5,18 @@ class ChatBar extends Component {
     super(props);
 
     this.state = {
-      username: 'Anonymous',
+      username: this.props.username,
       content: ''
     };
 
     this.onEnterUsername = this.onEnterUsername.bind(this);
+    this.onSubmitUsername = this.onSubmitUsername.bind(this);
+
     this.onEnterMessage = this.onEnterMessage.bind(this);
-    this.onHitEnter = this.onHitEnter.bind(this);
+    this.onSubmitMessage = this.onSubmitMessage.bind(this);
   }
+
+  // ---------- CHANGE USERNAME ---------- //
 
   onEnterUsername(event) {
     this.setState({
@@ -20,27 +24,55 @@ class ChatBar extends Component {
     });
   }
 
+  onSubmitUsername(event) {
+    if (event.key == 'Enter') {
+      let notification = {
+        type: 'postNotification',
+        username: this.state.username,
+        content: this.props.username + ' has changed to ' + this.state.username
+      }
+      this.props.addNewMessage(notification);
+    }
+  }
+
+  // ---------- SUBMIT MESSAGE ---------- //
+
   onEnterMessage(event) {
     this.setState({
       content: event.target.value
     })
   }
 
-  onHitEnter(event) {
+  onSubmitMessage(event) {
     if (event.key == 'Enter') {
       console.log('Enter key was pressed');
-      this.props.addNewMessage(this.state);
+      let formInput = {
+        type: 'postMessage',
+        username: this.state.username,
+        content: this.state.content
+      }
+      this.props.addNewMessage(formInput);
+      this.setState({
+        content: ''
+      })
     }
   }
 
+
   render() {
     return (
-      <footer className="chatbar" onKeyPress={ this.onHitEnter }>
-        <input onChange={ this.onEnterUsername }
+      <footer className="chatbar">
+        <input
+          onKeyUp={ this.onSubmitUsername }
+          onChange={ this.onEnterUsername }
+          value={ this.state.username }
           className="chatbar-username"
           placeholder="Your Name (Optional)"
         />
-        <input onChange={ this.onEnterMessage }
+        <input
+          onKeyUp={ this.onSubmitMessage }
+          onChange={ this.onEnterMessage }
+          value={ this.state.content }
           className="chatbar-message"
           placeholder="Type a message and hit ENTER"
         />
