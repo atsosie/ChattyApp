@@ -29,9 +29,9 @@ class ChatBar extends Component {
       let notification = {
         type: 'postNotification',
         username: this.state.username,
-        content: this.props.username + ' has changed to ' + this.state.username
+        content: this.props.username + ' has changed their name to ' + this.state.username + '.'
       }
-      this.props.addNewMessage(notification);
+      this.props.addNewNotification(notification);
     }
   }
 
@@ -52,9 +52,9 @@ class ChatBar extends Component {
         content: this.state.content
       }
       this.props.addNewMessage(formInput);
-      this.setState({
-        content: ''
-      })
+      // this.setState({
+      //   content: ''
+      // })
     }
   }
 

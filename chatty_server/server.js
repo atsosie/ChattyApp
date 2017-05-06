@@ -2,19 +2,19 @@ const express = require('express');
 const SocketServer = require('ws');
 const uuid = require('node-uuid');
 
-// Set the port to 3001
+// Set the port to 3001.
 const PORT = 3001;
 
-// Create a new express server
+// Create a new express server.
 const server = express()
-   // Make the express server serve static assets (html, javascript, css) from the /public folder
+   // Make the express server serve static assets (html, javascript, css) from the /public folder.
   .use(express.static('public'))
   .listen(PORT, '0.0.0.0', 'localhost', () => console.log(`Listening on ${ PORT }`));
 
-// Create the WebSockets server
+// Create the WebSockets server.
 const wss = new SocketServer.Server({ server });
 
-// Set up a callback that will run when a client connects to the server
+// Set up a callback that will run when a client connects to the server.
 // When a client connects they are assigned a socket, represented by
 // the ws parameter in the callback.
 
@@ -42,23 +42,29 @@ wss.on('connection', (ws) => {
   broadcast(message);
 
   ws.on('message', (message) => {
+  // When server receives output from 'addNewMessage' function in App,
+  // that output is parsed, given a message type, then broadcast.
+
     let parsedMessage = JSON.parse(message);
-    console.log(`User ${parsedMessage.username} said ${parsedMessage.content}`);
+    console.log('parsedMessage = ', parsedMessage);
 
     switch(parsedMessage.type) {
-      case 'postNotification':
-        parsedMessage.type = 'incomingNotification';
+      case 'initialState':
+        parsedMessage.type = 'initialState';
         break;
       case 'postMessage':
         parsedMessage.type = 'incomingMessage';
         parsedMessage.id = uuid.v1();
+        console.log(`User ${parsedMessage.username} said ${parsedMessage.content}`);
         break;
-      case 'initialState':
-        parsedMessage.type = 'initialState';
+      case 'postNotification':
+        parsedMessage.type = 'incomingNotification';
+        parsedMessage.id  = uuid.v1();
+        console.log(`${parsedMessage.content}`);
         break;
       default:
         //throw new Error('Unknown event type ' + message.type)
-        console.log('Unknown event type ' + message.type); //***Fix this
+        console.log('Unknown event type ' + message.type); //***Fix this error handling
     }
 
     broadcast(parsedMessage);
