@@ -8,18 +8,21 @@ class App extends Component {
     super(props);
 
     this.state = {
-      currentUser: { name: 'Bob' }, // optional. if currentUser is not defined, it means the user is Anonymous
-      messages: [],
-      notifications: []
+      currentUser: { name: 'Anonymous' }, // Optional. If currentUser is not defined, it means the user is Anonymous.
+      messages: []
     };
 
     this.addNewMessage = this.addNewMessage.bind(this);
     this.addNewNotification = this.addNewNotification.bind(this);
   }
 
+// ----- Props passed to ChatBar -----
+
+// These two functions format data into a message or a notification,
+// set the current state to display the message author (if not null),
+// and send the new message/notification to the server to be broadcast.
+
   addNewMessage(data) {
-  // Define 'newMessage' object using data from ChatBar
-  // then send that object to the server to be broadcast
 
     console.log('Rcd new messge ...');
 
@@ -36,11 +39,13 @@ class App extends Component {
   }
 
   addNewNotification(data) {
+
     console.log('Rcd new notification ...');
 
     const newNotification = {
-      content: data.content,
-      type: data.type
+      content: `${this.state.currentUser.name} has changed their name to ${data.username}`,
+      type: data.type,
+      username: null
     }
 
     console.log('newNotification from "addNewNotification" function in App = ', newNotification);
@@ -48,7 +53,7 @@ class App extends Component {
     this.setState({ currentUser: { name: data.username } });
     this.socket.send(JSON.stringify(newNotification));
   }
-
+// -----------------------------------
 
   componentDidMount() {
     console.log('componentDidMount <App />');
@@ -74,7 +79,7 @@ class App extends Component {
           break;
         case 'incomingNotification':
           this.setState({
-            notifications: this.state.notifications.concat(eventData)
+            messages: this.state.messages.concat(eventData)
           });
           break;
         case 'initialState':
@@ -98,8 +103,8 @@ class App extends Component {
         />
         <ChatBar
           username={ this.state.currentUser.name }
-          addNewMessage={ this.addNewMessage.bind(this) }
-          addNewNotification={ this.addNewNotification.bind(this) }
+          addNewMessage={ this.addNewMessage }
+          addNewNotification={ this.addNewNotification }
           defaultValue={ this.state.currentUser }
         />
       </div>

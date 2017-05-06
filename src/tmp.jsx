@@ -1,9 +1,11 @@
-    const newMessage = {
-      id: this.state.messages.length + 1,
-      username: event.username,
-      content: event.content
-    }
-
+  {
+          this.props.messages.map((currentMessage) => {
+            return <Message
+                      key={ currentMessage.id }
+                      username={ currentMessage.username }
+                      content={ currentMessage.content }
+                    />
+          })}
 // -----------------------------
 
 import React, { Component } from 'react';
@@ -17,3 +19,9 @@ class /* Name */ extends Component {
 }
 
 export default /* Name */;
+
+//--------------------------------
+
+COLORS
+green: 88b04b
+grey: D6D5DA

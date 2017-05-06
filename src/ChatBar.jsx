@@ -16,7 +16,7 @@ class ChatBar extends Component {
     this.onSubmitMessage = this.onSubmitMessage.bind(this);
   }
 
-  // ---------- CHANGE USERNAME ---------- //
+  // ----- Event handlers for changing username -----
 
   onEnterUsername(event) {
     this.setState({
@@ -29,13 +29,14 @@ class ChatBar extends Component {
       let notification = {
         type: 'postNotification',
         username: this.state.username,
-        content: this.props.username + ' has changed their name to ' + this.state.username + '.'
+        content: this.state.content
       }
       this.props.addNewNotification(notification);
     }
   }
 
-  // ---------- SUBMIT MESSAGE ---------- //
+
+  // ----- Event handlers for sending message -----
 
   onEnterMessage(event) {
     this.setState({
@@ -52,9 +53,10 @@ class ChatBar extends Component {
         content: this.state.content
       }
       this.props.addNewMessage(formInput);
-      // this.setState({
-      //   content: ''
-      // })
+      // Reset message form field to empty after message is submitted.
+      this.setState({
+        content: ''
+      })
     }
   }
 
