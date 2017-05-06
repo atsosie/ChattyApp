@@ -16,7 +16,7 @@ class ChatBar extends Component {
     this.onSubmitMessage = this.onSubmitMessage.bind(this);
   }
 
-  // ----- Event handlers for changing username -----
+  // ----- event handlers for changing username -----
 
   onEnterUsername(event) {
     this.setState({
@@ -25,18 +25,23 @@ class ChatBar extends Component {
   }
 
   onSubmitUsername(event) {
-    if (event.key == 'Enter') {
+  // TODO: Add flash messages for better user experience.
+  // Currently, submitting a blank form does nothing on front-end.
+    if (event.key == 'Enter' && this.state.username !== '') {
       let notification = {
         type: 'postNotification',
         username: this.state.username,
         content: this.state.content
       }
       this.props.addNewNotification(notification);
+    } else {
+      event.preventDefault();
+      console.log('Error: User tried to update username with a blank form. Notification not sent.');
     }
   }
 
 
-  // ----- Event handlers for sending message -----
+  // ----- event handlers for sending message -----
 
   onEnterMessage(event) {
     this.setState({
@@ -45,7 +50,9 @@ class ChatBar extends Component {
   }
 
   onSubmitMessage(event) {
-    if (event.key == 'Enter') {
+  // TODO: Add flash messages for better user experience.
+  // Currently, submitting a blank form does nothing on front-end.
+    if (event.key == 'Enter' && this.state.content !== '') {
       console.log('Enter key was pressed');
       let formInput = {
         type: 'postMessage',
@@ -53,10 +60,14 @@ class ChatBar extends Component {
         content: this.state.content
       }
       this.props.addNewMessage(formInput);
+
       // Reset message form field to empty after message is submitted.
       this.setState({
         content: ''
       })
+    } else {
+      event.preventDefault();
+      console.log('Error: User tried to submit message with a blank form. Message not sent.');
     }
   }
 

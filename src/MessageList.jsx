@@ -14,7 +14,6 @@ class MessageList extends Component {
                 key={ currentMessage.id }
                 type={ currentMessage.type }
                 username={ currentMessage.username }
-
               />
     })
 

@@ -9,14 +9,15 @@ class App extends Component {
 
     this.state = {
       currentUser: { name: 'Anonymous' }, // Optional. If currentUser is not defined, it means the user is Anonymous.
-      messages: []
+      messages: [],
+      userCount: 0
     };
 
     this.addNewMessage = this.addNewMessage.bind(this);
     this.addNewNotification = this.addNewNotification.bind(this);
   }
 
-// ----- Props passed to ChatBar -----
+// ----- functions passed to ChatBar as props -----
 
 // These two functions format data into a message or a notification,
 // set the current state to display the message author (if not null),
@@ -99,7 +100,6 @@ class App extends Component {
       <div>
         <MessageList
           messages={ this.state.messages }
-          notifications={ this.state.notifications }
         />
         <ChatBar
           username={ this.state.currentUser.name }
