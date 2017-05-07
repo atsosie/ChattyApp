@@ -1,14 +1,14 @@
-React Boilerplate
+ChattyApp
 =====================
 
-A minimal and light dev environment for ReactJS.
+A minimal and light chat application.
 
 ### Usage
 
-Clone the boilerplate and create your own git repo.
+Clone and create your own git repo.
 
 ```
-git clone git@github.com:lighthouse-labs/react-simple-boilerplate.git
+git clone git@github.com:atsosie/ChattyApp.git
 git remote rm origin
 git remote add origin [YOUR NEW REPOSITORY]
 # Manually update your package.json file
@@ -30,7 +30,7 @@ For example, if you copy a file called my_image.png into the build folder you ca
 
 ### Linting
 
-This boilerplate project includes React ESLint configuration.
+This project includes React ESLint configuration.
 
 ```
 npm run lint
