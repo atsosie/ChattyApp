@@ -3,9 +3,16 @@ import React, { Component } from 'react';
 class Message extends Component {
 
   render() {
-  console.log("within Message render(), this.props.username/content = ", this.props.username, this.props.content);
+
+    let messageClass = 'message';
+    // If username is null, the message is a postNotification.
+    // Add 'system' class to adjust styling.
+    if (this.props.username === null) {
+      messageClass += ' system';
+    }
+
     return (
-      <div className="message">
+      <div className={ messageClass }>
         <span className="message-username">{ this.props.username }</span>
         <span className="message-content">{ this.props.content }</span>
       </div>
