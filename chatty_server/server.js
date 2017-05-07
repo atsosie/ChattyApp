@@ -1,45 +1,50 @@
+//***MOST CURRENT WORKING STATE ***
+
 const express = require('express');
 const SocketServer = require('ws');
 const uuid = require('node-uuid');
 
-// Set the port to 3001.
 const PORT = 3001;
 
-// Create a new express server.
 const server = express()
-   // Make the express server serve static assets (html, javascript, css) from the /public folder.
   .use(express.static('public'))
   .listen(PORT, '0.0.0.0', 'localhost', () => console.log(`Listening on ${ PORT }`));
 
 // Create the WebSockets server.
 const wss = new SocketServer.Server({ server });
 
-// Set up a callback that will run when a client connects to the server.
-// When a client connects they are assigned a socket, represented by
-// the ws parameter in the callback.
+// When a client connects, they are assigned a socket,
+// represented by the 'ws' parameter in the callback.
+// ws = client
 
 function broadcast(data) {
-
   wss.clients.forEach((ws) => {
-    // console.log('These should be equal: ', ws.readyState, SocketServer.OPEN);
+    console.log('These should be equal: ', ws.readyState, SocketServer.OPEN);
 
     if (ws.readyState === SocketServer.OPEN) {
-
-      let stringifiedData = JSON.stringify(data);
-      ws.send(stringifiedData);
+      ws.send(JSON.stringify(data));
     }
   });
 }
 
-wss.on('connection', (ws) => {
-  console.log('Client connected');
-
-  let message = {
-    type: 'initialState',
-    content: '',
-    username: ''
+// Call this function when new client is connected and again when client closes the socket.
+// This lets App know the value of userCount has changed.
+// Message 'type' must be included so App knows how to handle this message event.
+function updateUserCount() {
+  let userCountUpdate = {
+    type: 'userCountUpdate',
+    value: wss.clients.size
   }
-  broadcast(message);
+  broadcast(userCountUpdate);
+}
+
+
+wss.on('connection', (ws) => {
+  console.log('\n----- Client connected -----\n');
+  console.log("within 'wss.on(connection)': wss.clients.size = ", wss.clients.size);
+
+  updateUserCount();
+
 
   ws.on('message', (message) => {
   // When server receives output from 'addNewMessage' function in App,
@@ -70,14 +75,13 @@ wss.on('connection', (ws) => {
     broadcast(parsedMessage);
   });
 
-  // Set up a callback for when a client closes the socket. This usually means they closed their browser.
+
   ws.on('close', () => {
     console.log('Client disconnected');
-    let message = {
-      id: '',
-      content: '',
-      username: ''
-    }
-    broadcast(message);
+    console.log('wss.clients.size = ', wss.clients.size);
+    userCount = wss.clients.size;
+
+    updateUserCount();
+
   });
 });

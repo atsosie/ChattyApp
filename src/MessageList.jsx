@@ -5,9 +5,7 @@ import Message from './Message.jsx'
 class MessageList extends Component {
 
   render() {
-    console.log("within MessageList render(), this.props.messages = ", this.props.messages);
-    console.log("within MessageList render(), this.props.notifications = ", this.props.notifications);
-    // Extract message object from array of messages
+
     const currentMessage = this.props.messages.map((currentMessage) => {
       return <Message
                 content={ currentMessage.content }

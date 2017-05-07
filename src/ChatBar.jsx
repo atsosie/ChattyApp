@@ -54,8 +54,6 @@ class ChatBar extends Component {
   }
 
   onSubmitMessage(event) {
-  // TODO: Add flash messages for better user experience.
-  // Currently, submitting a blank form does nothing on front-end.
     if (event.key == 'Enter') {
       console.log('Enter key was pressed');
 
@@ -63,16 +61,20 @@ class ChatBar extends Component {
         event.preventDefault();
         console.log('Error: User tried to submit message with a blank form. Message not sent.');
       } else {
+
         let newMessge = {
           type: 'postMessage',
           username: this.state.username,
           content: this.state.content
         }
+
         if (!this.state.username) {
           newMessge.username = 'Anonymous';
         }
+
         this.props.addNewMessage(newMessge);
-        // Reset message form field to empty after message is submitted.
+
+        // This resets message field to empty after message is submitted.
         this.setState({
           content: ''
         })

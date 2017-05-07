@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 
 import ChatBar from './ChatBar.jsx'
 import MessageList from './MessageList.jsx'
+import NavBar from './NavBar.jsx'
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      currentUser: { name: 'Anonymous' }, // Optional. If currentUser is not defined, it means the user is Anonymous.
+      currentUser: {}, // Optional. If currentUser is not defined, it means the user is Anonymous.
       messages: [],
       userCount: 0
     };
@@ -44,7 +45,7 @@ class App extends Component {
     console.log('Rcd new notification ...');
 
     const newNotification = {
-      content: `${this.state.currentUser.name} has changed their name to ${data.username}`,
+      content: data.content,
       type: data.type,
       username: null
     }
@@ -54,6 +55,7 @@ class App extends Component {
     this.setState({ currentUser: { name: data.username } });
     this.socket.send(JSON.stringify(newNotification));
   }
+
 // -----------------------------------
 
   componentDidMount() {
@@ -69,7 +71,7 @@ class App extends Component {
       console.log('this.socket.onmessage "event" =\n', event);
 
       const eventData = JSON.parse(event.data);
-      console.log('JSON parsed event data = ', eventData);
+      console.log('***onMessage: JSON parsed event data = ', eventData);
 
       switch(eventData.type) {
         case 'incomingMessage':
@@ -86,9 +88,13 @@ class App extends Component {
         case 'initialState':
           console.log('no messages yet');
           break;
+        case 'userCountUpdate':
+          this.setState({
+            userCount: eventData.value
+          })
+          break;
         default:
-          // throw new Error('Unknown event type ' + data.type);
-          console.log('Unknown event type ' + eventData.type); //***Fix this
+          throw new Error('Unknown event type ' + data.type);
       }
     }
   }
@@ -98,6 +104,9 @@ class App extends Component {
     console.log("within App render(), this.state.messages = ", this.state.messages);
     return (
       <div>
+        <NavBar
+          userCount={ this.state.userCount }
+        />
         <MessageList
           messages={ this.state.messages }
         />
@@ -105,7 +114,6 @@ class App extends Component {
           username={ this.state.currentUser.name }
           addNewMessage={ this.addNewMessage }
           addNewNotification={ this.addNewNotification }
-          defaultValue={ this.state.currentUser }
         />
       </div>
     );
