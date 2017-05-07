@@ -105,6 +105,7 @@ class App extends Component {
     return (
       <div>
         <NavBar
+          imageSrc="../build/chatty-app-logo.png"
           userCount={ this.state.userCount }
         />
         <MessageList

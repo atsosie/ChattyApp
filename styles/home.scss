@@ -10,8 +10,8 @@ body {
 }
 
 .chatbar {
-  background: tomato;
-  border-top: 1px solid black;
+  background: #E7E3D8;
+  border-top: 1px solid #ADA397;
   bottom: 0;
   display: flex;
   left: 0;
@@ -22,7 +22,7 @@ body {
 
 .chatbar-message,
 .chatbar-username {
-  border: 1px solid black;
+  border: 1px solid #ADA397;
   display: block;
   height: 40px;
   line-height: 40px;
@@ -36,6 +36,12 @@ body {
 
 .chatbar-username {
   flex: 2;
+}
+
+.image {
+  display: inline-block;
+  max-width: 50%;
+  height: auto;
 }
 
 .message {
@@ -65,28 +71,29 @@ body {
 }
 
 .navbar {
-  background: tomato;
-  border-bottom: 1px solid black;
-  height: 60px;
+  display: inline-flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: 75px;
+  background: #E7E3D8;
+  border-bottom: 1px solid #ADA397;
   left: 0;
-  padding: 0 10px;
+  padding: 10px 10px;
   position: fixed;
   right: 0;
   top: 0;
 }
 
 .navbar-brand {
-  color: inherit;
-  display: block;
-  float: left;
-  font-weight: 700;
-  font-size: 28px;
-  height: 60px;
-  line-height: 60px;
-  padding: 0 10px;
-  text-decoration: none;
+  max-width: 400px;
+  height: auto;
+}
+
+.userCount {
+  color: #3F4F5E;
 }
 
 h1 {
-  color: tomato;
+  color: #88b04b;
 }
