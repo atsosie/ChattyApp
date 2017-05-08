@@ -26,23 +26,18 @@ class App extends Component {
 
   addNewMessage(data) {
 
-    console.log('Rcd new messge ...');
-
     const newMessage = {
       content: data.content,
       type: data.type,
       username: data.username
     }
 
-    console.log('newMessage from "addNewMessage" function in App = ', newMessage);
-
     this.setState({ currentUser: { name: newMessage.username } });
     this.socket.send(JSON.stringify(newMessage));
   }
 
-  addNewNotification(data) {
 
-    console.log('Rcd new notification ...');
+  addNewNotification(data) {
 
     const newNotification = {
       content: data.content,
@@ -50,32 +45,27 @@ class App extends Component {
       username: null
     }
 
-    console.log('newNotification from "addNewNotification" function in App = ', newNotification);
-
     this.setState({ currentUser: { name: data.username } });
     this.socket.send(JSON.stringify(newNotification));
   }
 
-// -----------------------------------
+// ------------------------------------------------
 
   componentDidMount() {
-    console.log('componentDidMount <App />');
 
     this.socket = new WebSocket('ws://localhost:3001');
 
+
     this.socket.onopen = (event) => {
-      console.log('Connected to server', event);
+      console.log('Connected to server');
     }
 
     this.socket.onmessage = (event) => {
-      console.log('this.socket.onmessage "event" =\n', event);
 
       const eventData = JSON.parse(event.data);
-      console.log('***onMessage: JSON parsed event data = ', eventData);
 
       switch(eventData.type) {
         case 'incomingMessage':
-          console.log("within incomingMessage");
           this.setState({
             messages: this.state.messages.concat(eventData)
           });
@@ -94,14 +84,14 @@ class App extends Component {
           })
           break;
         default:
-          throw new Error('Unknown event type ' + data.type);
+          throw new Error('Unknown event type ' + eventData.type);
       }
     }
   }
 
 
   render() {
-    console.log("within App render(), this.state.messages = ", this.state.messages);
+
     return (
       <div>
         <NavBar

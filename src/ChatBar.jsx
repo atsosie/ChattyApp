@@ -26,8 +26,6 @@ class ChatBar extends Component {
 
   handleSubmitUsername(event) {
     if (event.key == 'Enter') {
-      console.log('Enter key was pressed');
-      console.log('A name was changed: ' + this.state.username);
 
       let notification = {
         type: 'postNotification',
@@ -55,7 +53,6 @@ class ChatBar extends Component {
 
   onSubmitMessage(event) {
     if (event.key == 'Enter') {
-      console.log('Enter key was pressed');
 
       if (!this.state.content) {
         event.preventDefault();
@@ -92,8 +89,6 @@ class ChatBar extends Component {
           onKeyUp={ this.handleSubmitUsername }
           placeholder="Your Name (Optional)"
           value={ this.state.username }
-
-
         />
         <input
           className="chatbar-message"

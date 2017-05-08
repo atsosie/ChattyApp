@@ -1,5 +1,3 @@
-//***MOST CURRENT WORKING STATE ***
-
 const express = require('express');
 const SocketServer = require('ws');
 const uuid = require('node-uuid');
@@ -17,15 +15,15 @@ const wss = new SocketServer.Server({ server });
 // represented by the 'ws' parameter in the callback.
 // ws = client
 
+
 function broadcast(data) {
   wss.clients.forEach((ws) => {
-    console.log('These should be equal: ', ws.readyState, SocketServer.OPEN);
-
     if (ws.readyState === SocketServer.OPEN) {
       ws.send(JSON.stringify(data));
     }
   });
 }
+
 
 // Call this function when new client is connected and again when client closes the socket.
 // This lets App know the value of userCount has changed.
@@ -40,18 +38,14 @@ function updateUserCount() {
 
 
 wss.on('connection', (ws) => {
-  console.log('\n----- Client connected -----\n');
-  console.log("within 'wss.on(connection)': wss.clients.size = ", wss.clients.size);
 
   updateUserCount();
-
 
   ws.on('message', (message) => {
   // When server receives output from 'addNewMessage' function in App,
   // that output is parsed, given a message type, then broadcast.
 
     let parsedMessage = JSON.parse(message);
-    console.log('parsedMessage = ', parsedMessage);
 
     switch(parsedMessage.type) {
       case 'initialState':
@@ -68,8 +62,7 @@ wss.on('connection', (ws) => {
         console.log(`${parsedMessage.content}`);
         break;
       default:
-        //throw new Error('Unknown event type ' + message.type)
-        console.log('Unknown event type ' + message.type); //***Fix this error handling
+        throw new Error('Unknown event type ' + message.type)
     }
 
     broadcast(parsedMessage);
@@ -77,10 +70,8 @@ wss.on('connection', (ws) => {
 
 
   ws.on('close', () => {
-    console.log('Client disconnected');
-    console.log('wss.clients.size = ', wss.clients.size);
-    userCount = wss.clients.size;
 
+    userCount = wss.clients.size;
     updateUserCount();
 
   });
