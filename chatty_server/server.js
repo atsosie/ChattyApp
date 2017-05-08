@@ -62,7 +62,7 @@ wss.on('connection', (ws) => {
         console.log(`${parsedMessage.content}`);
         break;
       default:
-        throw new Error('Unknown event type ' + message.type)
+        throw new Error('Unknown event type ' + parsedMessage.type)
     }
 
     broadcast(parsedMessage);
